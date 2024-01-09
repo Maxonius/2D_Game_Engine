@@ -3,68 +3,100 @@ from gameobject import *
 
 TAG = {"-": "wall", "*": "player", "+": "point", "e": "exit", "w": "danger", "a": "danger", "s": "danger",
        "d": "danger"}
+"""словарь ключ : str из массива level, значение : тег объекта на уровне"""
 
 
 class Graphics(Canvas):
+    """Класс игрового движка
 
+    x : int
+        ширина окна игры
+    y : int
+        высота окна игры
+    color : str
+        цвет фона"""
     def __init__(self, x, y, color):
         super().__init__(width=x, height=y, background=color)
         self.initGame()
         self.pack()
 
     def initGame(self):
+        """Инициализация всех начальных значений для переменных"""
         self.delete(ALL)
         self.IMAGE = {}
+        """словарь ключ : str из массива level, значение : PhotoImage изображение на уровне"""
         self.inGame = True
+        """запущена ли игра"""
         self.score = 0
+        """счет"""
         self.collisionwall = False
+        """коллизия со стеной"""
         self.collisionwall_left = False
+        """коллизия со стеной слева"""
         self.collisionwall_right = False
+        """коллизия со стеной справа"""
         self.collisionwall_ground = False
-        self.collisionwall_up = False
+        """коллизия со стеной снизу"""
         self.y_speed = 0
-        self.PposY = 0
-        self.lastPposY = 0
+        """скорость по y"""
         self.key = ""
-        self.keyr = ""
+        """последняя нажатая клавиша"""
         self.up = False
+        """набирает ли игрок высоту во время прыжка"""
         self.stopup = False
+        """игрок перестал набирать высоту"""
 
         self.moveX = 0
+        """на сколько передвинуть по x"""
         self.moveY = 0
+        """на сколько передвинуть по y"""
 
         self.UP_SPEED = 0.0005
+        """увеличение скорости при наборе высосты"""
         self.MAX_Y_SPEED = -0.4
+        """максимальная скорость прыжка"""
         self.FALL_SPEED = 0.002
+        """увеличение скорость при падении"""
 
         self.SPEED = 0.2
+        """скорость движения"""
 
         self.UP_CURSOR_KEY = ""
+        """клавиша прыжка"""
         self.LEFT_CURSOR_KEY = ""
+        """клавиша движения влево"""
         self.RIGHT_CURSOR_KEY = ""
-
-
-        self.player = ""
-
-
+        """клавиша движения вправо"""
 
         self.wall = ''
+        """список изображений стен на экране"""
         self.point = ''
+        """список изображений монет на экране"""
         self.exit = ''
+        """изображение выхода на экране"""
         self.danger = ''
-        self.frame = 0
+        """список изображений шипов на экране"""
 
         self.gameObjects = []
-
+        """список игровых объектов list[GameObject]"""
 
         self.loadImages()
 
     def bind(self, up, left, right):
+        """Установка клавиш управления
+
+        up : str
+            клавиша прыжка
+        left : str
+            клавиша движения влево
+        right : str
+            клавиша движения вправо"""
         self.UP_CURSOR_KEY = up
         self.LEFT_CURSOR_KEY = left
         self.RIGHT_CURSOR_KEY = right
 
     def movePlayer(self):
+        """Передвижение спрайта игрока"""
         if (self.collisionwall_ground == False and (self.key != self.UP_CURSOR_KEY or not self.up)):
             self.y_speed += self.UP_SPEED
         if (self.up):
@@ -98,6 +130,7 @@ class Graphics(Canvas):
         self.move(self.player, self.moveX, self.moveY)
 
     def loadImages(self):
+        """Загрузка начальных спрайтов"""
         self.iplayerr = PhotoImage(file="pl.png")
         self.iplayerl = self.rotateImg(self.iplayerr, "flip")
         self.iplayerr = self.makeTransparent(self.iplayerr)
@@ -122,6 +155,14 @@ class Graphics(Canvas):
 
 
     def rotateImg(self, img, t):
+        """Вращение изображения
+
+        img : PhotoImage
+            изображение
+        t : str
+            действие
+
+        Возвращает повернутое на 90 или 180 градусов изображение или отзеркаливает его"""
         newimg = PhotoImage(width=img.width(), height=img.height())
         for x in range(img.width()):
             for y in range(img.height()):
@@ -133,10 +174,15 @@ class Graphics(Canvas):
                         newimg.put(rgb, (x, img.height() - y))
                     if t == "90":
                         newimg.put(rgb, (y, x))
-
         return newimg
 
     def makeTransparent(self, img):
+        """Прозрачность изображения
+
+        img : PhotoImage
+            изображение
+
+        Возвращает изображение, удаляя весь белый цвет"""
         newPhotoImage = PhotoImage(width=img.width(), height=img.height())
         for x in range(img.width()):
             for y in range(img.height()):
@@ -146,6 +192,14 @@ class Graphics(Canvas):
         return newPhotoImage
 
     def Crop(self, img, width):
+        """Разбиение на кадры
+
+        img : PhotoImage
+            изображение
+        width : int
+            ширина кадра в пикселях
+
+        Возвращает список кадров"""
         images = []
         n = img.width()//width
         for k in range(n):
@@ -159,6 +213,14 @@ class Graphics(Canvas):
         return images
 
     def create_map(self, level, widht):
+        """Создание карты по массиву
+
+        level : list[str]
+            массив с ключами
+
+        widht : int
+            ширина клетки на карте в пикселях"""
+
         x = 0
         y = widht
         x1 = 0
@@ -188,12 +250,20 @@ class Graphics(Canvas):
 
 
     def add_objects_of_tag(self, tag):
+        """Добавляет к списку объектов все объекты с тегом
+
+        tag : str
+            тег объектов"""
         for i in self.find_withtag(tag):
             o = GameObject(i)
             o.tag = tag
             self.gameObjects.append(o)
 
     def find_gameobjects_with_tag(self, tag):
+        """Возвращает список объектов с тегом
+
+        tag : str
+            тег объектов"""
         objects = []
         for obj in self.gameObjects:
             if obj.tag == tag:
@@ -201,21 +271,35 @@ class Graphics(Canvas):
         return objects
 
     def find_gameobject_with_id(self, id):
+        """Возвращает объект с соответствующим id
+
+        id : int
+            id объекта"""
         for obj in self.gameObjects:
             if obj.id == id:
                 return obj
 
     def change_current_animation(self, id, name):
+        """Изменяет текующую анимацию объекта
+
+        id : int
+            id объекта
+
+        name : str
+            ключ анимации"""
         self.find_gameobject_with_id(id).change_anim(name)
 
     def checkCollisions(self, anchor):
+        """Проверка коллизий игрока
+
+        anchor : str
+            направление движения игрока"""
         self.collisionwall = False
         self.wall = self.find_withtag("wall")
         self.point = self.find_withtag("point")
         self.exit = self.find_withtag("exit")
         self.danger = self.find_withtag("danger")
-
-        x1, y1, x2, y2 = self.bbox(self.player)
+        x1, y1, x2, y2 = self.bbox(self.find_gameobjects_with_tag("player")[0].id)
         self.collisionwall_left = self.checkWallCollision(x1 - 1, y1, x2 - 1, y2, anchor, "Right")
         self.collisionwall_right = self.checkWallCollision(x1 + 1, y1, x2 + 1, y2, anchor, "Left")
         self.collisionwall_ground = self.checkWallCollision(x1, y1 + 1, x2, y2 + 1, "", "")
@@ -236,6 +320,15 @@ class Graphics(Canvas):
                     self.EndGame()
 
     def checkWallCollision(self, x1, x2, y1, y2, anchor, key):
+        """Проверка коллизий со стенами
+
+        x1 : int, x2 : int, y1 : int, y2 : int
+            координаты
+        anchor : str
+            направление движения игрока
+        key : str
+            нажатая клавиша
+        """
         overlap = self.find_overlapping(x1, x2, y1, y2)
         for ovr in overlap:
             for i in range(len(self.wall)):
@@ -246,6 +339,7 @@ class Graphics(Canvas):
         return False
 
     def onTimer(self):
+        """Игровой цикл"""
         for object in self.gameObjects:
             try:
                 self.change_frame(object.id,object.animations[object.currentAnim],object.frame)
@@ -257,9 +351,19 @@ class Graphics(Canvas):
             self.after(1, self.onTimer)
 
     def start_animation(self):
+        """Запуск анимаций"""
         for obj in self.gameObjects:
             obj.anim()
 
     def change_frame(self, id, sprite, frame):
+        """Смена кадра анимации
+
+        id : int
+            id объекта
+        sprite : list[PhotoImage]
+            список кадров
+        frame : int
+            индекс кадра
+        """
         self.itemconfigure(id, image=sprite[frame])
 

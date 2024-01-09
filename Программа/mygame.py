@@ -1,6 +1,16 @@
 from graphics import *
 
 class MyGame(Graphics):
+    """Класс игры
+
+        x : int
+            ширина окна игры
+        y : int
+            высота окна игры
+        color : str
+            цвет фона
+        level : list[str]
+            массив с ключами"""
     def __init__(self, x, y, color, level):
         super().__init__(x, y, color)
         self.bind_all("<Key>", self.onKeyPressed)
@@ -9,17 +19,30 @@ class MyGame(Graphics):
         self.pack()
 
     def run(self):
-        Graphics.mainloop(self)
+        """Запуск mainloop для Tk"""
+        self.mainloop()
 
     def update(self):
+        """Обновление игры
+
+        Запускает основной цикл"""
         self.onTimer()
         self.start_animation()
 
 
     def Keys(self, keyup, keyleft, keyright):
-        Graphics.bind(self, keyup, keyleft, keyright)
+        """Установка клавиш управления
+
+        keyup : str
+            клавиша прыжка
+        keyleft : str
+            клавиша движения влево
+        keyright : str
+            клавиша движения вправо"""
+        self.bind(keyup, keyleft, keyright)
 
     def onKeyPressed(self, e):
+        """Вызывается при нажатии клавиш на клавиатуре"""
         self.key = e.keysym
         if self.key == self.UP_CURSOR_KEY:
             if self.collisionwall_ground:
@@ -36,6 +59,7 @@ class MyGame(Graphics):
             self.moveX = self.SPEED
 
     def onKeyRelease(self, e):
+        """Вызывается при отжатии клавиш на клавиатуре"""
         self.keyr = e.keysym
         if self.keyr != self.UP_CURSOR_KEY:
             self.key = ""
@@ -46,6 +70,7 @@ class MyGame(Graphics):
             self.change_current_animation(self.find_withtag("player")[0], "idle")
 
     def drawScore(self):
+        """Отрисовка счета"""
         score = self.find_withtag("score")
         self.itemconfigure(score, text="Счет: {0}".format(self.score))
         if self.score == 5:
@@ -53,6 +78,7 @@ class MyGame(Graphics):
 
 
     def EndGame(self):
+        """Выводит сообщение в конце игры"""
         self.delete(ALL)
         if self.score == 5:
             self.create_text(self.winfo_width() / 2, (self.winfo_height() / 2) - 50,
