@@ -279,7 +279,7 @@ class Graphics(Canvas):
             if obj.id == id:
                 return obj
 
-    def change_current_animation(self, id, name):
+    def change_current_animation(self, id, name, time):
         """Изменяет текующую анимацию объекта
 
         id : int
@@ -287,7 +287,7 @@ class Graphics(Canvas):
 
         name : str
             ключ анимации"""
-        self.find_gameobject_with_id(id).change_anim(name)
+        self.find_gameobject_with_id(id).change_anim(name, time)
 
     def checkCollisions(self, anchor):
         """Проверка коллизий игрока
@@ -353,7 +353,10 @@ class Graphics(Canvas):
     def start_animation(self):
         """Запуск анимаций"""
         for obj in self.gameObjects:
-            obj.anim()
+            if obj.tag == "player":
+                obj.anim(300)
+            else:
+                obj.anim(150)
 
     def change_frame(self, id, sprite, frame):
         """Смена кадра анимации

@@ -19,18 +19,18 @@ class GameObject(Animation):
         self.currentAnim = "idle"
         """ключ текущей анимации"""
 
-    def change_anim(self, name):
+    def change_anim(self, name, time):
         """Изменение текущей анимации объекта
 
         name : str
             ключ анимации"""
         self.currentAnim = name
         self.n = len(self.animations[self.currentAnim]) - 1
-        self.time = 1000//(self.n+1)
-        self.frame=0
+        self.time = time
+        self.frame = 0
 
-    def anim(self):
+    def anim(self, time):
         """Старт анимации объекта"""
         self.n = len(self.animations[self.currentAnim])-1
-        self.time = 1000 // (self.n + 1)
+        self.time = time
         self.onTimerAnimation()

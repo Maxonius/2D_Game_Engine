@@ -50,12 +50,12 @@ class MyGame(Graphics):
 
         if self.key == self.LEFT_CURSOR_KEY:
             if self.find_gameobject_with_id(self.find_withtag("player")[0]).currentAnim != "move_l":
-                self.change_current_animation(self.find_withtag("player")[0], "move_l")
+                self.change_current_animation(self.find_withtag("player")[0], "move_l", 100)
             self.moveX = -self.SPEED
 
         if self.key == self.RIGHT_CURSOR_KEY:
             if self.find_gameobject_with_id(self.find_withtag("player")[0]).currentAnim != "move":
-                self.change_current_animation(self.find_withtag("player")[0], "move")
+                self.change_current_animation(self.find_withtag("player")[0], "move", 100)
             self.moveX = self.SPEED
 
     def onKeyRelease(self, e):
@@ -65,9 +65,9 @@ class MyGame(Graphics):
             self.key = ""
             self.moveX = 0
         if self.keyr == self.LEFT_CURSOR_KEY:
-            self.change_current_animation(self.find_withtag("player")[0], "idle_l")
+            self.change_current_animation(self.find_withtag("player")[0], "idle_l", 300)
         if self.keyr == self.RIGHT_CURSOR_KEY:
-            self.change_current_animation(self.find_withtag("player")[0], "idle")
+            self.change_current_animation(self.find_withtag("player")[0], "idle", 300)
 
     def drawScore(self):
         """Отрисовка счета"""
