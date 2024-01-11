@@ -1,6 +1,6 @@
 from tkinter import *
 from gameobject import *
-
+from animation import *
 TAG = {"-": "wall", "*": "player", "+": "point", "e": "exit", "w": "danger", "a": "danger", "s": "danger",
        "d": "danger"}
 """словарь ключ : str из массива level, значение : тег объекта на уровне"""
@@ -153,7 +153,6 @@ class Graphics(Canvas):
 
 
 
-
     def rotateImg(self, img, t):
         """Вращение изображения
 
@@ -241,13 +240,12 @@ class Graphics(Canvas):
         self.add_objects_of_tag("point")
         self.add_objects_of_tag("player")
         for i in self.find_gameobjects_with_tag("point"):
-            i.animations["idle"] = self.Crop(PhotoImage(file="coins.png"), 32)
+            i.animations.append(Animation("idle", self.Crop(PhotoImage(file="coins.png"), 32), 150))
         for i in self.find_gameobjects_with_tag("player"):
-            i.animations["idle"] = self.Crop(PhotoImage(file="player_idle.png"), 40)
-            i.animations["idle_l"] = self.Crop(PhotoImage(file="player_idle_l.png"), 40)
-            i.animations["move"] = self.Crop(PhotoImage(file="player_move.png"), 40)
-            i.animations["move_l"] = self.Crop(PhotoImage(file="player_move_l.png"), 40)
-
+            i.animations.append(Animation("idle", self.Crop(PhotoImage(file="player_idle.png"), 40), 300))
+            i.animations.append(Animation("idle_l", self.Crop(PhotoImage(file="player_idle_l.png"), 40), 300))
+            i.animations.append(Animation("move", self.Crop(PhotoImage(file="player_move.png"), 40), 100))
+            i.animations.append(Animation("move_l", self.Crop(PhotoImage(file="player_move_l.png"), 40), 100))
 
     def add_objects_of_tag(self, tag):
         """Добавляет к списку объектов все объекты с тегом
@@ -279,7 +277,7 @@ class Graphics(Canvas):
             if obj.id == id:
                 return obj
 
-    def change_current_animation(self, id, name, time):
+    def change_current_animation(self, id, name):
         """Изменяет текующую анимацию объекта
 
         id : int
@@ -287,7 +285,7 @@ class Graphics(Canvas):
 
         name : str
             ключ анимации"""
-        self.find_gameobject_with_id(id).change_anim(name, time)
+        self.find_gameobject_with_id(id).change_anim(name)
 
     def checkCollisions(self, anchor):
         """Проверка коллизий игрока
@@ -342,21 +340,13 @@ class Graphics(Canvas):
         """Игровой цикл"""
         for object in self.gameObjects:
             try:
-                self.change_frame(object.id,object.animations[object.currentAnim],object.frame)
+                self.change_frame(object.id, object.find_animation_with_name(object.currentAnim).anim,object.find_animation_with_name(object.currentAnim).frame)
             except IndexError:
                 continue
         self.checkCollisions(self.key)
         if self.inGame:
             self.movePlayer()
             self.after(1, self.onTimer)
-
-    def start_animation(self):
-        """Запуск анимаций"""
-        for obj in self.gameObjects:
-            if obj.tag == "player":
-                obj.anim(300)
-            else:
-                obj.anim(150)
 
     def change_frame(self, id, sprite, frame):
         """Смена кадра анимации

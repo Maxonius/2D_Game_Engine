@@ -1,14 +1,19 @@
 from graphics import *
 class Animation(Canvas):
     """Класс анимаций"""
-    def __init__(self):
+    def __init__(self, name, anim, time):
         super().__init__()
-        self.n=0
-        """колличество кадров в анимации"""
         self.frame = 0
         """индекс кадра"""
-        self.time = 1
+        self.time = time
         """скорость анимации"""
+        self.name = name
+        """название анимации"""
+        self.anim = anim
+        """список кадров"""
+        self.n = len(anim)-1
+        """колличество кадров в анимации"""
+        self.onTimerAnimation()
 
     def onTimerAnimation(self):
         """Счетчик кадров анимации"""

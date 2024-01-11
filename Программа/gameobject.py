@@ -1,5 +1,4 @@
-from animation import *
-class GameObject(Animation):
+class GameObject():
     """Класс игрового объекта
 
      id : int
@@ -8,29 +7,26 @@ class GameObject(Animation):
         super().__init__()
         self.id = id
         """id объекта"""
-        self.frame = 0
-        """индекс текущего кадра анимации"""
         self.tag = ''
         """тег"""
-        self.animations = {}
-        """список анимаций"""
-        self.time = 1
-        """скорость текущей анимации"""
+        self.animations = []
+        """список анимаций объекта"""
         self.currentAnim = "idle"
         """ключ текущей анимации"""
 
-    def change_anim(self, name, time):
+    def change_anim(self, name):
         """Изменение текущей анимации объекта
 
         name : str
             ключ анимации"""
         self.currentAnim = name
-        self.n = len(self.animations[self.currentAnim]) - 1
-        self.time = time
-        self.frame = 0
 
-    def anim(self, time):
-        """Старт анимации объекта"""
-        self.n = len(self.animations[self.currentAnim])-1
-        self.time = time
-        self.onTimerAnimation()
+    def find_animation_with_name(self, name):
+        """Поиск анимации по названию
+
+            name : str
+                название анимации
+            Возвращает анимация с названием"""
+        for anim in self.animations:
+            if anim.name == name:
+                return anim
