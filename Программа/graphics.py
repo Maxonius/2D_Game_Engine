@@ -131,22 +131,22 @@ class Graphics(Canvas):
 
     def loadImages(self):
         """Загрузка начальных спрайтов"""
-        self.iplayerr = PhotoImage(file="pl.png")
+        self.iplayerr = PhotoImage(file="images/pl.png")
         self.iplayerl = self.rotateImg(self.iplayerr, "flip")
         self.iplayerr = self.makeTransparent(self.iplayerr)
 
-        self.ibrick = PhotoImage(file="brick.png")
+        self.ibrick = PhotoImage(file="images/brick.png")
 
-        self.icoins = self.Crop(PhotoImage(file="coins.png"), 32)
+        self.icoins = self.Crop(PhotoImage(file="images/coins.png"), 32)
 
-        self.iexit_c = PhotoImage(file="exit_closed.png")
-        self.iexit_o = PhotoImage(file="exit_opened.png")
+        self.iexit_c = PhotoImage(file="images/exit_closed.png")
+        self.iexit_o = PhotoImage(file="images/exit_opened.png")
 
-        self.idangerw = PhotoImage(file="danger.png")
+        self.idangerw = PhotoImage(file="images/danger.png")
 
-        self.idangers = self.rotateImg(PhotoImage(file="danger.png"), "180")
-        self.idangera = self.rotateImg(PhotoImage(file="danger.png"), "90")
-        self.idangerd = self.rotateImg(self.rotateImg(PhotoImage(file="danger.png"), "180"), "90")
+        self.idangers = self.rotateImg(PhotoImage(file="images/danger.png"), "180")
+        self.idangera = self.rotateImg(PhotoImage(file="images/danger.png"), "90")
+        self.idangerd = self.rotateImg(self.rotateImg(PhotoImage(file="images/danger.png"), "180"), "90")
 
         self.IMAGE = {"-": self.ibrick, "*": self.iplayerr, "+": self.icoins[0], "e": self.iexit_c, "w": self.idangerw,
                       "a": self.idangera, "s": self.idangers, "d": self.idangerd, }
@@ -240,12 +240,12 @@ class Graphics(Canvas):
         self.add_objects_of_tag("point")
         self.add_objects_of_tag("player")
         for i in self.find_gameobjects_with_tag("point"):
-            i.animations.append(Animation("idle", self.Crop(PhotoImage(file="coins.png"), 32), 150))
+            i.animations.append(Animation("idle", self.Crop(PhotoImage(file="images/coins.png"), 32), 150))
         for i in self.find_gameobjects_with_tag("player"):
-            i.animations.append(Animation("idle", self.Crop(PhotoImage(file="player_idle.png"), 40), 300))
-            i.animations.append(Animation("idle_l", self.Crop(PhotoImage(file="player_idle_l.png"), 40), 300))
-            i.animations.append(Animation("move", self.Crop(PhotoImage(file="player_move.png"), 40), 100))
-            i.animations.append(Animation("move_l", self.Crop(PhotoImage(file="player_move_l.png"), 40), 100))
+            i.animations.append(Animation("idle", self.Crop(PhotoImage(file="images/player_idle.png"), 40), 300))
+            i.animations.append(Animation("idle_l", self.Crop(PhotoImage(file="images/player_idle_l.png"), 40), 300))
+            i.animations.append(Animation("move", self.Crop(PhotoImage(file="images/player_move.png"), 40), 100))
+            i.animations.append(Animation("move_l", self.Crop(PhotoImage(file="images/player_move_l.png"), 40), 100))
 
     def add_objects_of_tag(self, tag):
         """Добавляет к списку объектов все объекты с тегом
@@ -340,7 +340,7 @@ class Graphics(Canvas):
         """Игровой цикл"""
         for object in self.gameObjects:
             try:
-                self.change_frame(object.id, object.find_animation_with_name(object.currentAnim).anim,object.find_animation_with_name(object.currentAnim).frame)
+                self.change_frame(object.id, object.find_animation_with_name(object.currentAnim).get_frame())
             except IndexError:
                 continue
         self.checkCollisions(self.key)
@@ -348,15 +348,13 @@ class Graphics(Canvas):
             self.movePlayer()
             self.after(1, self.onTimer)
 
-    def change_frame(self, id, sprite, frame):
+    def change_frame(self, id, img):
         """Смена кадра анимации
 
         id : int
             id объекта
-        sprite : list[PhotoImage]
-            список кадров
-        frame : int
-            индекс кадра
+        sprite : PhotoImage
+            кадр анимации
         """
-        self.itemconfigure(id, image=sprite[frame])
+        self.itemconfigure(id, image = img)
 

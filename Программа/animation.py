@@ -22,3 +22,7 @@ class Animation(Canvas):
         else:
             self.frame += 1
         self.after(self.time, self.onTimerAnimation)
+
+    def get_frame(self):
+        """Возвращает текущий кадр"""
+        return self.anim[self.frame]
