@@ -1,7 +1,7 @@
 from graphics import *
 class Animation(Canvas):
     """Класс анимаций"""
-    def __init__(self, name, anim, time):
+    def __init__(self, name, file_name, n, time):
         super().__init__()
         self.frame = 0
         """индекс кадра"""
@@ -9,10 +9,13 @@ class Animation(Canvas):
         """скорость анимации"""
         self.name = name
         """название анимации"""
-        self.anim = anim
+        self.anim = []
         """список кадров"""
-        self.n = len(anim)-1
+        self.n = n
         """колличество кадров в анимации"""
+        self.file_name = file_name
+        """имя файла"""
+        self.crop()
         self.onTimerAnimation()
 
     def onTimerAnimation(self):
@@ -26,3 +29,20 @@ class Animation(Canvas):
     def get_frame(self):
         """Возвращает текущий кадр"""
         return self.anim[self.frame]
+
+    def crop(self):
+        """Разбиение на кадры
+
+        Возвращает список кадров"""
+        img = PhotoImage(file=f"images/{self.file_name}")
+        images = []
+        width = img.width()//self.n
+        for k in range(self.n):
+            newPhotoImage = PhotoImage(width=width, height=img.height())
+            for x in range(width * k, width * (k + 1)):
+                for y in range(img.height()):
+                    rgb = '#%02x%02x%02x' % img.get(x, y)
+                    if rgb != '#ffffff':
+                        newPhotoImage.put(rgb, (x - width * k, y))
+            images.append(newPhotoImage)
+        self.anim = images

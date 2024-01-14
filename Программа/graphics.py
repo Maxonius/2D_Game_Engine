@@ -137,7 +137,7 @@ class Graphics(Canvas):
 
         self.ibrick = PhotoImage(file="images/brick.png")
 
-        self.icoins = self.Crop(PhotoImage(file="images/coins.png"), 32)
+        self.icoins = PhotoImage()
 
         self.iexit_c = PhotoImage(file="images/exit_closed.png")
         self.iexit_o = PhotoImage(file="images/exit_opened.png")
@@ -148,7 +148,7 @@ class Graphics(Canvas):
         self.idangera = self.rotateImg(PhotoImage(file="images/danger.png"), "90")
         self.idangerd = self.rotateImg(self.rotateImg(PhotoImage(file="images/danger.png"), "180"), "90")
 
-        self.IMAGE = {"-": self.ibrick, "*": self.iplayerr, "+": self.icoins[0], "e": self.iexit_c, "w": self.idangerw,
+        self.IMAGE = {"-": self.ibrick, "*": self.iplayerr, "+": self.icoins, "e": self.iexit_c, "w": self.idangerw,
                       "a": self.idangera, "s": self.idangers, "d": self.idangerd, }
 
 
@@ -190,27 +190,6 @@ class Graphics(Canvas):
                     newPhotoImage.put(rgb, (x, y))
         return newPhotoImage
 
-    def Crop(self, img, width):
-        """Разбиение на кадры
-
-        img : PhotoImage
-            изображение
-        width : int
-            ширина кадра в пикселях
-
-        Возвращает список кадров"""
-        images = []
-        n = img.width()//width
-        for k in range(n):
-            newPhotoImage = PhotoImage(width=width, height=img.height())
-            for x in range(width * k, width * (k + 1)):
-                for y in range(img.height()):
-                    rgb = '#%02x%02x%02x' % img.get(x, y)
-                    if rgb != '#ffffff':
-                        newPhotoImage.put(rgb, (x - width * k, y))
-            images.append(newPhotoImage)
-        return images
-
     def create_map(self, level, widht):
         """Создание карты по массиву
 
@@ -240,12 +219,12 @@ class Graphics(Canvas):
         self.add_objects_of_tag("point")
         self.add_objects_of_tag("player")
         for i in self.find_gameobjects_with_tag("point"):
-            i.animations.append(Animation("idle", self.Crop(PhotoImage(file="images/coins.png"), 32), 150))
+            i.animations.append(Animation("idle", "coins.png", 6, 150))
         for i in self.find_gameobjects_with_tag("player"):
-            i.animations.append(Animation("idle", self.Crop(PhotoImage(file="images/player_idle.png"), 40), 300))
-            i.animations.append(Animation("idle_l", self.Crop(PhotoImage(file="images/player_idle_l.png"), 40), 300))
-            i.animations.append(Animation("move", self.Crop(PhotoImage(file="images/player_move.png"), 40), 100))
-            i.animations.append(Animation("move_l", self.Crop(PhotoImage(file="images/player_move_l.png"), 40), 100))
+            i.animations.append(Animation("idle", "player_idle.png", 2, 300))
+            i.animations.append(Animation("idle_l", "player_idle_l.png", 2, 300))
+            i.animations.append(Animation("move", "player_move.png", 8, 100))
+            i.animations.append(Animation("move_l", "player_move_l.png", 8, 100))
 
     def add_objects_of_tag(self, tag):
         """Добавляет к списку объектов все объекты с тегом
