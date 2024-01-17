@@ -28,6 +28,7 @@ LEVEL = ["----------------------------------------",
 
 def main():
     w = MyGame(1280, 768, "cyan", LEVEL)
+    w.objects(w)
     w.update()
     w.Keys("Up", "Left", "Right")
     w.run()

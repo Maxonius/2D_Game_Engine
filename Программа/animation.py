@@ -34,7 +34,7 @@ class Animation(Canvas):
         """Разбиение на кадры
 
         Возвращает список кадров"""
-        img = PhotoImage(file=f"images/{self.file_name}")
+        img = PhotoImage(file=self.file_name)
         images = []
         width = img.width()//self.n
         for k in range(self.n):
