@@ -46,3 +46,40 @@ class Animation(Canvas):
                         newPhotoImage.put(rgb, (x - width * k, y))
             images.append(newPhotoImage)
         self.anim = images
+
+    def rotateImg(self, img, t):
+        """Вращение изображения
+
+        img : PhotoImage
+            изображение
+        t : str
+            действие
+
+        Возвращает повернутое на 90 или 180 градусов изображение или отзеркаливает его"""
+        newimg = PhotoImage(width=img.width(), height=img.height())
+        for x in range(img.width()):
+            for y in range(img.height()):
+                rgb = '#%02x%02x%02x' % img.get(x, y)
+                if rgb != '#ffffff':
+                    if t == "flip":
+                        newimg.put(rgb, (img.width() - x, y))
+                    if t == "180":
+                        newimg.put(rgb, (x, img.height() - y))
+                    if t == "90":
+                        newimg.put(rgb, (y, x))
+        return newimg
+
+    def makeTransparent(self, img):
+        """Прозрачность изображения
+
+        img : PhotoImage
+            изображение
+
+        Возвращает изображение, удаляя весь белый цвет"""
+        newPhotoImage = PhotoImage(width=img.width(), height=img.height())
+        for x in range(img.width()):
+            for y in range(img.height()):
+                rgb = '#%02x%02x%02x' % img.get(x, y)
+                if rgb != '#ffffff':
+                    newPhotoImage.put(rgb, (x, y))
+        return newPhotoImage
