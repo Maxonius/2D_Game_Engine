@@ -16,7 +16,7 @@ class Graphics(Canvas):
 
     def __init__(self, x, y, color):
         super().__init__(width=x, height=y, background=color)
-        self.gameObjects = []
+        self.anim = {}
         self.pack()
 
     def change_frame(self, id, img):
@@ -29,12 +29,14 @@ class Graphics(Canvas):
         """
         self.itemconfigure(tagOrId=id, image = img)
 
+    def add_anim(self, a, b):
+        self.anim[a] = b
+
     def onTimer(self):
         """Цикл анимаций"""
-        for object in self.gameObjects:
+        for i in self.anim:
             try:
-                pass
-                self.change_frame(object.id, object.find_animation_with_name(object.currentAnim).get_frame())
+                self.change_frame(i, self.anim[i].get_frame())
             except IndexError:
                 continue
         self.after(1, self.onTimer)
