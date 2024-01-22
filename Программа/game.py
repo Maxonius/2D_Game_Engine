@@ -258,17 +258,19 @@ class Game():
         name : str
             ключ анимации"""
         self.find_gameobject_with_id(id).change_anim(name)
+        self.g.add_anim(id, self.find_gameobject_with_id(id).find_animation_with_name(name))
 
     def add_animations(self):
         """Добавление анимаций"""
         for i in self.find_gameobjects_with_tag("point"):
             i.animations.append(Animation("idle", "images/coins.png", 6, 150))
-
+            self.change_current_animation(i.id, "idle")
         for i in self.find_gameobjects_with_tag("player"):
             i.animations.append(Animation("idle", "images/player_idle.png", 2, 300))
             i.animations.append(Animation("idle_l", "images/player_idle_l.png", 2, 300))
             i.animations.append(Animation("move", "images/player_move.png", 8, 100))
             i.animations.append(Animation("move_l", "images/player_move_l.png", 8, 100))
+            self.change_current_animation(i.id, "idle")
 
 
 
@@ -276,8 +278,6 @@ class Game():
     def onTimer(self):
         """Игровой цикл"""
         self.checkCollisions(self.key)
-        for obj in self.gameObjects:
-            self.g.add_anim(obj.id, obj.find_animation_with_name(obj.currentAnim))
         if self.inGame:
             self.movePlayer()
             self.g.after(1, self.onTimer)
