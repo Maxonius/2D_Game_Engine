@@ -272,12 +272,33 @@ class Game():
             i.animations.append(Animation("move_l", "images/player_move_l.png", 8, 100))
             self.change_current_animation(i.id, "idle")
 
+    def drawScore(self):
+        """Отрисовка счета"""
+        score = self.g.find_withtag("score")
+        self.g.itemconfigure(score, text="Счет: {0}".format(self.score))
+        if self.score == 5:
+            self.g.itemconfigure("exit", image = self.iexit_o)
 
+
+    def EndGame(self):
+        """Выводит сообщение в конце игры"""
+        self.g.delete(ALL)
+        if self.score == 5:
+            self.g.create_text(1280 / 2, (768 / 2) - 50,
+                             text="Вы выйграли!", fill="black", font = "Times 28")
+        else:
+            self.g.create_text(1280 / 2, (768 / 2) - 50,
+                             text="Вы проиграли...", fill="black", font = "Times 28")
+        self.g.create_text(1280 / 2, 768 / 2,
+                         text="Игра закончилась со счетом {0}".format(self.score),fill="black", font = "Times 28")
+        restart = Button(text="Начать заново", command=lambda: self.initGame())
+        restart.pack()
 
 
     def onTimer(self):
         """Игровой цикл"""
         self.checkCollisions(self.key)
+        self.drawScore()
         if self.inGame:
             self.movePlayer()
             self.g.after(1, self.onTimer)
